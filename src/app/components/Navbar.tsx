@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Music2, User, UserCircle, LogOut } from 'lucide-react';
+import { Music2, User, UserCircle, LogOut, Store } from 'lucide-react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuth } from '../contexts/AuthContext';
 import { AuthModal } from './AuthModal';
@@ -48,6 +48,18 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
             </button>
           ))}
         </div>
+
+        {isAuthenticated && (
+          <button
+            onClick={() => onTabChange('publicar')}
+            className={`flex items-center gap-1.5 text-xs md:text-sm transition-colors ${
+              activeTab === 'publicar' ? 'text-white' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            <Store className="w-3.5 h-3.5" />
+            Publicar
+          </button>
+        )}
 
         {isAuthenticated ? (
           <DropdownMenu.Root>
