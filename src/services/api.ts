@@ -39,6 +39,7 @@ export interface Venue {
   capacity: number | null;
   type: string;
   isVerified: boolean;
+  poster: string | null;
   distance?: number;
   createdAt: string;
   updatedAt: string;
