@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, X, Calendar, Clock, Music2, MapPin, Loader2 } from 'lucide-react';
+import { Plus, X, Calendar, Clock, Music2, Loader2 } from 'lucide-react';
 import { eventsService, type EventItem } from '../../services/events.service';
 import { mapsService } from '../../services/maps.service';
 import type { Venue } from '../../services/api';

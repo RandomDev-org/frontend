@@ -1,5 +1,5 @@
 import { useState, useEffect, type FormEvent } from 'react';
-import { User, Mail, Phone, MapPin, Music2, History, Save, Loader2 } from 'lucide-react';
+import { User, Mail, Phone, Music2, History, Save, Loader2 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { api } from '../../services/api';
 import { profileService, type UserPreferences } from '../../services/profile.service';
@@ -17,7 +17,7 @@ export function ProfilePage() {
   const [phone, setPhone] = useState('');
   const [username, setUsername] = useState('');
 
-  const [prefs, setPrefs] = useState<UserPreferences | null>(null);
+  const [, setPrefs] = useState<UserPreferences | null>(null);
   const [genresStr, setGenresStr] = useState('');
 
   const [history, setHistory] = useState<any[]>([]);

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { Sidebar } from './Sidebar';
 import { Map } from './Map';
 import { SlidersHorizontal, X } from 'lucide-react';
