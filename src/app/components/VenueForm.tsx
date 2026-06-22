@@ -27,13 +27,31 @@ export function VenueForm() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result as string;
+
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setError('La imagen no puede superar los 5 MB. Seleccioná una más pequeña.');
+      return;
+    }
+
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const MAX_W = 1200;
+      let { width, height } = img;
+      if (width > MAX_W) {
+        height = Math.round((height * MAX_W) / width);
+        width = MAX_W;
+      }
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d')!;
+      ctx.drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
       setPosterPreview(dataUrl);
       setPoster(dataUrl);
     };
-    reader.readAsDataURL(file);
+    img.src = URL.createObjectURL(file);
   };
 
   const searchAddress = async () => {

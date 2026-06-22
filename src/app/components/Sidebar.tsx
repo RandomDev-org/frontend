@@ -83,7 +83,7 @@ export function Sidebar({
             onClick={() => onVenueSelect(venue.id)}
           >
             <VenueCard
-              image=""
+              image={venue.poster ?? ''}
               venueName={venue.name}
               eventName={venue.name}
               band=""

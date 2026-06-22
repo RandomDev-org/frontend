@@ -1,0 +1,12 @@
+schema: spec-driven
+created: 2026-06-22
+proposal: |
+  Las VenueCards en Map.tsx y Sidebar.tsx muestran `image=""` hardcodeado,
+  por lo que nunca se renderiza el poster subido por el usuario. Se debe pasar `venue.poster`.
+tasks:
+  - fix: pasar `venue.poster` en lugar de `""` en Map.tsx
+  - fix: pasar `venue.poster` en lugar de `""` en Sidebar.tsx
+specs:
+  - Dado un venue con poster (data URL), al seleccionarlo en el mapa, la VenueCard debe mostrar la imagen
+  - Dado un venue con poster, en la lista lateral debe mostrar la imagen
+  - Dado un venue sin poster, la VenueCard debe mostrar el gradiente por defecto (sin error)
