@@ -1,0 +1,12 @@
+schema: spec-driven
+created: 2026-06-22
+proposal: |
+  Migrar frontend a Docker con Nginx para servir la app Vite/React.
+  Multi-stage build: build de Node, luego sirve con Nginx.
+tasks:
+  - feat: add Dockerfile with multi-stage (node build + nginx serve)
+  - feat: add .dockerignore
+  - feat: add nginx.conf for SPA routing
+specs:
+  - Docker image must serve the SPA on port 80
+  - SPA routing must fallback to index.html for client-side routes
