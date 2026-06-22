@@ -39,16 +39,20 @@ export function VenueForm() {
   const searchAddress = async () => {
     if (!address.trim()) return;
     setSearching(true);
+    setError('');
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=5&countrycodes=pe`,
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=5`,
+        { headers: { 'User-Agent': 'MusicSpot/1.0' } },
       );
       const data = await res.json();
       if (data.length > 0) {
-        setLat(data[0].lat);
-        setLng(data[0].lon);
+        const r = data[0];
+        setLat(r.lat);
+        setLng(r.lon);
+        setAddress(r.display_name);
       } else {
-        setError('No se encontró la dirección');
+        setError('No se encontró la dirección. Probá con más detalles (ciudad, país)');
       }
     } catch {
       setError('Error al buscar dirección');
