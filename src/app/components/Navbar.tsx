@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Music2, User, LogOut } from 'lucide-react';
+import { Music2, User, UserCircle, LogOut } from 'lucide-react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { useAuth } from '../contexts/AuthContext';
 import { AuthModal } from './AuthModal';
@@ -70,6 +70,13 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
                   <p className="text-sm text-white font-medium truncate">{user?.name}</p>
                   <p className="text-xs text-gray-400 truncate">{user?.email}</p>
                 </div>
+                <DropdownMenu.Item
+                  onClick={() => { onTabChange('perfil'); }}
+                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer outline-none"
+                >
+                  <UserCircle className="w-4 h-4" />
+                  Mi Perfil
+                </DropdownMenu.Item>
                 <DropdownMenu.Item
                   onClick={() => { logout(); }}
                   className="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer outline-none"

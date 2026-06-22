@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Home } from './components/Home';
 import { MapView } from './components/MapView';
 import { Events } from './components/Events';
+import { ProfilePage } from './components/ProfilePage';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('inicio');
@@ -16,6 +17,8 @@ export default function App() {
         return <MapView />;
       case 'eventos':
         return <Events />;
+      case 'perfil':
+        return <ProfilePage />;
       default:
         return <Home onNavigate={setActiveTab} />;
     }
