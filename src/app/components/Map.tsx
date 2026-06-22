@@ -397,7 +397,7 @@ export function Map({
                 <X className="w-3.5 h-3.5" />
               </button>
               <VenueCard
-                image=""
+                image={selectedVenue.poster ?? ''}
                 venueName={selectedVenue.name}
                 eventName={selectedVenue.name}
                 band=""
