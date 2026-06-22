@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { AuthProvider } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Home } from './components/Home';
 import { MapView } from './components/MapView';
@@ -21,12 +22,11 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#121212] dark flex flex-col overflow-hidden">
-      {/* Navbar */}
-      <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
-
-      {/* Main Content */}
-      {renderContent()}
-    </div>
+    <AuthProvider>
+      <div className="h-screen w-screen bg-[#121212] dark flex flex-col overflow-hidden">
+        <Navbar activeTab={activeTab} onTabChange={setActiveTab} />
+        {renderContent()}
+      </div>
+    </AuthProvider>
   );
 }
