@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from '../contexts/NavigateContext';
 import { api } from '../../services/api';
 
@@ -9,6 +9,7 @@ const VENUE_TYPES = [
 
 export function VenueForm() {
   const { onTabChange } = useNavigate();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState('');
@@ -17,8 +18,43 @@ export function VenueForm() {
   const [capacity, setCapacity] = useState('');
   const [lat, setLat] = useState('');
   const [lng, setLng] = useState('');
+  const [poster, setPoster] = useState('');
+  const [posterPreview, setPosterPreview] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [searching, setSearching] = useState(false);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      setPosterPreview(dataUrl);
+      setPoster(dataUrl);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const searchAddress = async () => {
+    if (!address.trim()) return;
+    setSearching(true);
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=5&countrycodes=pe`,
+      );
+      const data = await res.json();
+      if (data.length > 0) {
+        setLat(data[0].lat);
+        setLng(data[0].lon);
+      } else {
+        setError('No se encontró la dirección');
+      }
+    } catch {
+      setError('Error al buscar dirección');
+    }
+    setSearching(false);
+  };
 
   const handleSubmit = async () => {
     setError('');
@@ -37,6 +73,7 @@ export function VenueForm() {
         capacity: capacity ? parseInt(capacity) : undefined,
         lat: parseFloat(lat),
         lng: parseFloat(lng),
+        poster: poster || undefined,
       });
       onTabChange('mapa');
     } catch (err) {
@@ -79,9 +116,24 @@ export function VenueForm() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs text-gray-400">Dirección</label>
-            <input value={address} onChange={e => setAddress(e.target.value)}
-              className="w-full bg-[#121212] text-white rounded-lg px-4 py-2.5 text-sm border border-white/10 focus:border-violet-500 outline-none" />
+            <label className="text-xs text-gray-400">Dirección *</label>
+            <div className="flex gap-2">
+              <input value={address} onChange={e => setAddress(e.target.value)}
+                placeholder="Ej: Av. Larco 123, Miraflores"
+                className="flex-1 bg-[#121212] text-white rounded-lg px-4 py-2.5 text-sm border border-white/10 focus:border-violet-500 outline-none" />
+              <button onClick={searchAddress} disabled={searching || !address.trim()}
+                className="px-4 py-2.5 rounded-lg bg-violet-500/20 text-violet-300 text-sm hover:bg-violet-500/30 transition-colors disabled:opacity-50 whitespace-nowrap">
+                {searching ? '...' : 'Buscar'}
+              </button>
+            </div>
+            {lat && lng && (
+              <p className="text-xs text-gray-500">
+                Ubicación encontrada: {parseFloat(lat).toFixed(4)}, {parseFloat(lng).toFixed(4)}
+              </p>
+            )}
+            <p className="text-xs text-gray-500">
+              Ingresá la dirección y presioná "Buscar" para ubicarlo automáticamente
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -97,21 +149,31 @@ export function VenueForm() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="text-xs text-gray-400">Ubicación *</label>
-            <div className="grid grid-cols-2 gap-3">
-              <input value={lat} onChange={e => setLat(e.target.value)} placeholder="Latitud"
-                className="w-full bg-[#121212] text-white rounded-lg px-4 py-2.5 text-sm border border-white/10 focus:border-violet-500 outline-none" />
-              <input value={lng} onChange={e => setLng(e.target.value)} placeholder="Longitud"
-                className="w-full bg-[#121212] text-white rounded-lg px-4 py-2.5 text-sm border border-white/10 focus:border-violet-500 outline-none" />
-            </div>
-            <p className="text-xs text-gray-500">
-              Sugerencia: abrí{' '}
-              <button onClick={() => onTabChange('mapa')} className="text-violet-400 hover:underline">
-                el mapa
+          <div className="space-y-1">
+            <label className="text-xs text-gray-400">Imagen del local</label>
+            <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" className="hidden" />
+            <div className="flex items-center gap-3">
+              <button onClick={() => fileInputRef.current?.click()}
+                className="px-4 py-2 rounded-lg bg-[#121212] text-gray-300 text-sm border border-white/10 hover:border-violet-500 transition-colors">
+                Seleccionar imagen
               </button>
-              , buscá tu local y copiá las coordenadas del popup
+              <span className="text-xs text-gray-500">PNG, JPG</span>
+            </div>
+            {posterPreview && (
+              <div className="mt-2 rounded-lg overflow-hidden border border-white/10">
+                <img src={posterPreview} alt="Preview" className="w-full h-32 object-cover" />
+              </div>
+            )}
+            <p className="text-xs text-gray-500">
+              También podés pegar una URL de imagen en el campo dirección
             </p>
+          </div>
+
+          <div className="space-y-1">
+            <label className="text-xs text-gray-400">O URL de imagen</label>
+            <input value={poster} onChange={e => { setPoster(e.target.value); setPosterPreview(e.target.value); }}
+              placeholder="https://ejemplo.com/imagen.jpg"
+              className="w-full bg-[#121212] text-white rounded-lg px-4 py-2.5 text-sm border border-white/10 focus:border-violet-500 outline-none" />
           </div>
 
           <button onClick={handleSubmit} disabled={saving}
